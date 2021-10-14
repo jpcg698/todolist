@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import { fetchList } from './listAPI.js';
 
 const initialState = {
-  items: ["Initial"],
+  items: [],
   status: 'idle',
 };
 

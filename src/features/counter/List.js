@@ -7,7 +7,10 @@ import {
     selectList
 } from './listSlice';
 import styles from './Counter.module.css';
-
+import * as yup from 'yup';
+import TextField from '@mui/material/TextField';
+import Button from '@mui/material/Button';
+import {useFormik} from "formik"
 
 const RenderList = ({list,dispatch})=>{
     if(list){
@@ -24,38 +27,72 @@ const RenderList = ({list,dispatch})=>{
     }
 }
 
+const validationSchema = yup.object({
+    text: yup
+      .string('Enter ToDo')
+      .min(1, 'Enter Some text')
+      .required('Enter Some text'),
+  });
+
+const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
 
 export function List() {
+    const formik = useFormik({
+        initialValues: {
+            text: '',
+          },
+        validationSchema: validationSchema,
+        onSubmit:async (values) => {
+            if(values.text.trim()){
+                if(document.activeElement.dataset.flag === "async"){
+                    await sleep(500); 
+                    dispatch(addAsync(values.text))
+                }else{
+                    dispatch(add(values.text))
+                }
+            }
+            values.text=""
+          },
+    });
+
+
   const list = useSelector(selectList);
   const dispatch = useDispatch();
-  const [text, setText] = useState('Add Text Here');
-    console.log(list)
   return (
     <div>
-        <input type="text" value={text} onChange={(e)=>setText(e.target.value)}/>
-      <div className={styles.row}>
-        <button
-          className={styles.button}
-          aria-label="Add to ToDo"
-          onClick={() => {
-            dispatch(add(text))
-            setText("")
-            }}
-        >
-          +
-        </button>
-      </div>
-      <div className={styles.row}>
-        <button
-          className={styles.asyncButton}
-          onClick={() => {
-            dispatch(addAsync(text))
-            setText("")
-            }}
-        >
-          Add Async
-        </button>
-      </div>
+       {/* // {({ isSubmitting }) => ( */}
+        <form onSubmit={formik.handleSubmit}>
+            <TextField
+            fullWidth
+            id="text"
+            name="text"
+            label="Add todo Item"
+            value={formik.values.text}
+            onChange={formik.handleChange}
+            error={formik.touched.text && Boolean(formik.errors.text)}
+            helperText={formik.touched.text && formik.errors.text}
+            />
+        <div className={styles.row}>
+            <Button variant="contained" fullWidth type="submit"
+            data-flag="normal"
+            className={styles.button}
+            aria-label="Add to ToDo"
+            >
+            Add to List
+            </Button>
+        </div>
+        <div className={styles.row}>
+            <Button variant="contained" fullWidth type="submit"
+            data-flag="async"
+            className={styles.asyncButton}
+            >
+            Add Async
+            </Button>
+            
+        </div>
+      </form>
+        {/* /* )} */}
       <ul>
           <RenderList list={list} dispatch={dispatch}/>
       </ul>
