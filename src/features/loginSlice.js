@@ -29,6 +29,7 @@ export const LogInSlice = createSlice({
     logout: (state) => {
       state.login = false
       state.username = ""
+      state.errorMessage = ""
     },
     reset: (state) => {
         state.errorMessage = ""

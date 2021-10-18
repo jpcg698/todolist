@@ -43,7 +43,7 @@ const StyledDiv = styled.div`
 `
 
 const RenderList = ({list,dispatch})=>{
-    console.log(list)
+    //console.log(list)
     if(list.length>0){
         return(
             <>
@@ -183,14 +183,14 @@ export function List() {
         }
         {!logged &&
 
-        <Button variant="contained"
-        className={styles.button}
-        aria-label="Login"
-        >
-        <Link to={{ pathname: "/login", state: { background: location } }}>
-                    Log in
-                </Link>
-        </Button>
+        <Link to={{ pathname: "/login", state: { background: location } }}> 
+          <Button variant="contained"
+          className={styles.button}
+          aria-label="Login"
+          >
+            Log in
+          </Button>
+        </Link>
         
         }
     </StyledDiv>
